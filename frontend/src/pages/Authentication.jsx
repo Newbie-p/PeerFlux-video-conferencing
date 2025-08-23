@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,7 +12,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Snackbar } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
+import { AuthContext } from '../contexts/AuthContext';
 
 
 const defaultTheme = createTheme();
@@ -23,11 +24,54 @@ function Authentication() {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [error, setError] = useState("");
+    const [severity, setSeverity] = useState("success");
     const [message, setMessage] = useState("");
 
     const [formState, setFormState] = useState(0);
     const [open, setOpen] = useState(false);
+
+    
+    const handleClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpen(false);
+    };
+
+
+    const { handleRegister, handleLogin} = useContext(AuthContext);
+
+    let handleAuth = async()=>{
+        setMessage("");
+        setSeverity("success");
+        try {
+            if(formState == 0){
+                let result = await handleLogin(username, password);
+            }
+            if(formState == 1){
+                let result = await handleRegister(name, email, username, password);
+                setUsername("");
+                setMessage(result);
+                setOpen(true);
+                setFormState(0);
+                setPassword("");
+                setName("");
+                setEmail("");
+            }
+        } catch (error) {
+            let errorMessage = "An unknown error occurred.";
+            if (error.response) {
+                // Backend responded with an error
+                errorMessage = error.response.data.message || "Something went wrong!";
+            } else {
+                // Network or other request error
+                errorMessage = "Network error, please try again later!";
+            }
+            // Set error message and severity, then open the Snackbar
+            setMessage(errorMessage);
+            setSeverity("error");
+            setOpen(true);
+        }
+    }
+
     return ( 
         <ThemeProvider theme={defaultTheme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
@@ -121,13 +165,12 @@ function Authentication() {
                                 id="password"
                             />
 
-                            <p style={{ color: "red" }}>{error}</p>
-
                             <Button
                                 type="button"
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
+                                onClick={handleAuth}
                             >
                                 {formState === 0 ? "Login " : "Register"}
                             </Button>
@@ -138,11 +181,15 @@ function Authentication() {
             </Grid>
 
             <Snackbar
-
                 open={open}
-                autoHideDuration={4000}
-                message={message}
-            />
+                autoHideDuration={6000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
+                    {message}
+                </Alert>
+            </Snackbar>
 
         </ThemeProvider>
      );

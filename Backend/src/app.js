@@ -22,7 +22,7 @@ app.use("/api/v1/users", authRoutes);
 
 const start = async()=>{
 
-    app.listen(PORT,()=>{
+    server.listen(PORT,()=>{
         console.log(`Listening on port ${PORT}`);
     })
     mongoose.connect(uri);// connects backend to database

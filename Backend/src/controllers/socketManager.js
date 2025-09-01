@@ -15,9 +15,9 @@ export const connectToSocket = (server)=>{
     });
 
     io.on("connection", (socket)=>{
-
+        console.log("something connected")
         socket.on("join-call", (path)=>{
-            if(connections[path] == undefined){
+            if(connections[path] === undefined){
                 connections[path] = []
             }
             connections[path].push(socket.id)
@@ -58,10 +58,10 @@ export const connectToSocket = (server)=>{
             }
         })
 
-        socket.compress("disconnect", ()=>{
+        socket.on("disconnect", ()=>{
             var diffTime = Math.abs(timeOnline[socket.id]- new Date())
             var key
-            for(const [k, v] of JSON.parse(JSON.stringify(Objects.entries(connections)))){
+            for(const [k, v] of JSON.parse(JSON.stringify(Object.entries(connections)))){
                 for(let a =0 ; a<v.length; a++){
                     if(v[a] == socket.id){
                         key = k

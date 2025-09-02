@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import  io  from "socket.io-client";
 import "../styles/VideoMeet.css"
+import { height, width } from '@mui/system';
 
 const server_url = "http://localhost:8000";
 
@@ -91,7 +92,68 @@ export default function VideoMeet(){
     }, [])
 
     let getUserMediaSuccess = (stream) =>{
+        try{
+            window.localStream.getTracks().forEach(track => track.stop())
+        }catch(e){ console.log(e)}
 
+        window.localStream = stream;
+        localVideoRef.current.srcObject = stream;
+
+        for(let id in connections){
+            if(id === socketIdRef.current) continue;
+
+            connections[id].addStream(window.localStream)
+            connections[id].createOffer().then((description)=>{
+                connections[id].setLocalDescription(description)
+                    .then(()=>{
+                        socketIdRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}))
+                    })
+                    .catch(e => console.log(e))
+            })
+        }
+        stream.getTracks().forEach(track => track.onended = ()=>{
+            setVideo(false);
+            setAudio(false);
+
+            try{
+                let tracks = localVideoRef.current.srcObject.getTracks()
+            }catch(e){console.log(e)}
+
+            // TODO BlackSIlence
+            let blackSilence = (...args) => new MediaStream([black(...args), silence()])
+            window.localStream = blackSilence();
+            localVideoRef.current.srcObject = window.localStream;
+
+            for(let id in connections){
+                connections[id].addStream(window.localStream)
+                connections[id].createOffer().then((description)=>{
+                    connections[id].setLocalDescription(description)
+                    .then(()=>{
+                        socketIdRef.current.emit("signal", id, JSON.stringify({"sdp": connections[id].localDescription}))
+                    })
+                    .catch(e=>console.log(e))
+                })
+            }
+        })
+    }
+
+    let silence = ()=>{
+        let ctx = new AudioContext()
+        let oscillator = ctx.createOscillator()
+
+        let dst = oscillator.connect(ctx.createMediaStreamDestination());
+
+        oscillator.start();
+        ctx.resume();
+        return Object.assign(dst.stream.getAudioTracks()[0],{enabled: false})
+    }
+
+    let black= ({width = 640, height = 400} = {})=>{
+        let canvas = Object.assign(document.createElement("canvas"), {width, height});
+        canvas.getContext('2D').fillRect(0,0,width, height);
+
+        let stream = canvas.captureStream();
+        return Object.assign(stream.getVideoTracks()[0], {enabled: false})
     }
 
     let getUserMedia = ()=>{
@@ -115,8 +177,25 @@ export default function VideoMeet(){
         }
     },[audio, video])
 
-    let gotMessageFromServer = ()=>{
+    let gotMessageFromServer = (fromId, message)=>{
+        var signal = JSON.parse(message);
 
+        if(fromId !== socketIdRef.current){
+            if(signal.sdp){
+                connections[fromId].setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(()=>{
+                    if(signal.sdp.type === "offer"){
+                        connections[fromId].createAnswer().then((description)=>{
+                            connections[fromId].setLocalDescription(description).then(()=>{
+                                socketIdRef.current.emit("signal", fromId, JSON.stringify({"sdp": connections[fromId].localDescription}))
+                            }).catch(e=>console.log(e));
+                        }).catch(e=>console.log(e))
+                    }
+                }).catch(e=>console.log(e))
+            }
+            if(signal.ice){
+                connections[fromId].addIceCandidate(new RTCIceCandidate(signal.ice)).catch(e=>console.log(e))
+            }
+        }
     }
 
     let addMessage = ()=>{
@@ -176,6 +255,9 @@ export default function VideoMeet(){
                         connections[socketListId].addStream(window.localStream);
                     }else{
                         //to do blacksilence
+                        let blackSilence = (...args) => new MediaStream([black(...args), silence()])
+                        window.localStream = blackSilence();
+                        connections[socketListId].addStream(window.localStream);
                     }
                 })
                 if(id === socketIdRef.current){
@@ -225,7 +307,9 @@ export default function VideoMeet(){
                 <div>
                     <video ref={localVideoRef} autoPlay muted></video>
                 </div>
-            </div> : <></>}
+            </div> : <>
+            <video ref={localVideoRef} autoPlay muted></video>
+            </>}
         </div>
     )
 }

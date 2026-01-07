@@ -1,22 +1,8 @@
 import React, { useContext, useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Snackbar, Alert } from '@mui/material';
 import { AuthContext } from '../contexts/AuthContext';
-
-
-const defaultTheme = createTheme();
+import { useNavigate } from 'react-router-dom';
+import "../App.css";
 
 function Authentication() {
 
@@ -26,27 +12,46 @@ function Authentication() {
     const [email, setEmail] = useState("");
     const [severity, setSeverity] = useState("success");
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const [formState, setFormState] = useState(0);
+    const [formState, setFormState] = useState(0); // 0 = login, 1 = register
     const [open, setOpen] = useState(false);
 
-    
+    const navigate = useNavigate();
+
     const handleClose = (event, reason) => {
-    if (reason === "clickaway") return;
-    setOpen(false);
+        if (reason === "clickaway") return;
+        setOpen(false);
     };
 
+    const { handleRegister, handleLogin } = useContext(AuthContext);
 
-    const { handleRegister, handleLogin} = useContext(AuthContext);
-
-    let handleAuth = async()=>{
+    const handleAuth = async () => {
         setMessage("");
         setSeverity("success");
+        setLoading(true);
+
         try {
-            if(formState == 0){
-                let result = await handleLogin(username, password);
+            if (formState == 0) {
+                // Login
+                if (!username.trim() || !password.trim()) {
+                    setMessage("Please fill in all fields");
+                    setSeverity("error");
+                    setOpen(true);
+                    setLoading(false);
+                    return;
+                }
+                await handleLogin(username, password);
             }
-            if(formState == 1){
+            if (formState == 1) {
+                // Register
+                if (!name.trim() || !email.trim() || !username.trim() || !password.trim()) {
+                    setMessage("Please fill in all fields");
+                    setSeverity("error");
+                    setOpen(true);
+                    setLoading(false);
+                    return;
+                }
                 let result = await handleRegister(name, email, username, password);
                 setUsername("");
                 setMessage(result);
@@ -59,126 +64,183 @@ function Authentication() {
         } catch (error) {
             let errorMessage = "An unknown error occurred.";
             if (error.response) {
-                // Backend responded with an error
                 errorMessage = error.response.data.message || "Something went wrong!";
             } else {
-                // Network or other request error
                 errorMessage = "Network error, please try again later!";
             }
-            // Set error message and severity, then open the Snackbar
             setMessage(errorMessage);
             setSeverity("error");
             setOpen(true);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
-    return ( 
-        <ThemeProvider theme={defaultTheme}>
-            <Grid container component="main" sx={{ height: '100vh' }}>
-                <CssBaseline />
-                <Grid
-                    item
-                    size={{ xs: 0, sm: 4, md: 7 }}
-                    sx={{
-                        backgroundImage: 'url("https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg")',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundColor: (t) =>
-                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        
-                    }}
-                />
-                <Grid item  size={{ xs: 12, sm: 8, md: 5 }} component={Paper} elevation={6} square >
-                    <Box
-                        sx={{
-                            my: 8,
-                            mx: 4,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            
-                        }}
-                    >
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
+    return (
+        <div className="authPageContainer">
+            <nav className="authNav">
+                <div className="navHeader">
+                    <h2 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>PeerFlux</h2>
+                </div>
+                <div className="navBackButton">
+                    <p onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>← Back to Home</p>
+                </div>
+            </nav>
 
+            <div className="authMainContainer">
+                <div className="authLeftPanel">
+                    <div className="authLeftContent">
+                        <h1>Welcome to PeerFlux</h1>
+                        <p>Connect instantly with video calls. No downloads needed.</p>
+                        <div className="authFeatures">
+                            <div className="feature">
+                                <span className="featureIcon">📹</span>
+                                <div>
+                                    <h3>HD Video</h3>
+                                    <p>Crystal clear video calls</p>
+                                </div>
+                            </div>
+                            <div className="feature">
+                                <span className="featureIcon">🔐</span>
+                                <div>
+                                    <h3>Secure</h3>
+                                    <p>End-to-end encrypted</p>
+                                </div>
+                            </div>
+                            <div className="feature">
+                                <span className="featureIcon">⚡</span>
+                                <div>
+                                    <h3>Fast</h3>
+                                    <p>Low latency connection</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                        <div>
-                            <Button variant={formState === 0 ? "contained" : ""} onClick={() => { setFormState(0) }}>
-                                Sign In
-                            </Button>
-                            <Button variant={formState === 1 ? "contained" : ""} onClick={() => { setFormState(1) }}>
-                                Sign Up
-                            </Button>
+                <div className="authRightPanel">
+                    <div className="authFormContainer">
+                        <div className="authFormHeader">
+                            <h2>PeerFlux</h2>
+                            <p>{formState === 0 ? "Sign in to your account" : "Create a new account"}</p>
                         </div>
 
-                        <Box component="form" noValidate sx={{ mt: 1 }}>
-                            {formState === 1 ? <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="fullname"
-                                label="Full Name"
-                                name="fullname"
-                                value={name}
-                                autoFocus
-                                onChange={(e) => setName(e.target.value)}
-                            /> : <></>}
+                        <div className="authTabButtons">
+                            <button
+                                className={`authTab ${formState === 0 ? 'active' : ''}`}
+                                onClick={() => {
+                                    setFormState(0);
+                                    setMessage("");
+                                }}
+                            >
+                                Sign In
+                            </button>
+                            <button
+                                className={`authTab ${formState === 1 ? 'active' : ''}`}
+                                onClick={() => {
+                                    setFormState(1);
+                                    setMessage("");
+                                }}
+                            >
+                                Sign Up
+                            </button>
+                        </div>
 
-                            {formState === 1 ? <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email"
-                                name="email"
-                                value={email}
-                                autoFocus
-                                onChange={(e) => setEmail(e.target.value)}
-                            /> : <></>}
-                            
+                        <form className="authForm" onSubmit={(e) => { e.preventDefault(); handleAuth(); }}>
+                            {formState === 1 && (
+                                <div className="formGroup">
+                                    <label htmlFor="name">Full Name</label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        placeholder="Enter your full name"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        disabled={loading}
+                                    />
+                                </div>
+                            )}
 
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                value={username}
-                                autoFocus
-                                onChange={(e) => setUsername(e.target.value)}
+                            {formState === 1 && (
+                                <div className="formGroup">
+                                    <label htmlFor="email">Email Address</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        placeholder="Enter your email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        disabled={loading}
+                                    />
+                                </div>
+                            )}
 
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                value={password}
-                                type="password"
-                                onChange={(e) => setPassword(e.target.value)}
+                            <div className="formGroup">
+                                <label htmlFor="username">Username</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    placeholder="Choose a username"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    disabled={loading}
+                                />
+                            </div>
 
-                                id="password"
-                            />
+                            <div className="formGroup">
+                                <label htmlFor="password">Password</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    disabled={loading}
+                                />
+                            </div>
 
-                            <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
+                            {formState === 0 && (
+                                <div className="rememberMe">
+                                    <input type="checkbox" id="remember" />
+                                    <label htmlFor="remember">Remember me</label>
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                className="authSubmitBtn"
+                                disabled={loading}
                                 onClick={handleAuth}
                             >
-                                {formState === 0 ? "Login " : "Register"}
-                            </Button>
+                                {loading ? (
+                                    <span>{formState === 0 ? "Signing in..." : "Creating account..."}</span>
+                                ) : (
+                                    <span>{formState === 0 ? "Sign In" : "Sign Up"}</span>
+                                )}
+                            </button>
+                        </form>
 
-                        </Box>
-                    </Box>
-                </Grid>
-            </Grid>
+                        <div className="authFooter">
+                            {formState === 0 ? (
+                                <p>Don't have an account? <span onClick={() => setFormState(1)} style={{ color: '#FF9839', fontWeight: 'bold', cursor: 'pointer' }}>Sign up</span></p>
+                            ) : (
+                                <p>Already have an account? <span onClick={() => setFormState(0)} style={{ color: '#FF9839', fontWeight: 'bold', cursor: 'pointer' }}>Sign in</span></p>
+                            )}
+                        </div>
+
+                        <div className="orDivider">
+                            <span>or continue as guest</span>
+                        </div>
+
+                        <button
+                            className="guestLoginBtn"
+                            onClick={() => navigate('/guest-join')}
+                        >
+                            Join as Guest
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <Snackbar
                 open={open}
@@ -190,9 +252,8 @@ function Authentication() {
                     {message}
                 </Alert>
             </Snackbar>
-
-        </ThemeProvider>
-     );
+        </div>
+    );
 }
 
 export default Authentication;

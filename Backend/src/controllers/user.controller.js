@@ -61,7 +61,7 @@ const getUserHistory = async (req, res) => {
 
     try {
         const user = await User.findOne({ token: token });
-        const meetings = await Meeting.find({ user_id: user.username })
+        const meetings = await Meeting.find({ user_id: user.username }).sort({ date: -1 })
         res.json(meetings)
     } catch (e) {
         res.json({ message: `Something went wrong ${e}` })
@@ -87,6 +87,19 @@ const addToHistory = async (req, res) => {
     }
 }
 
+const checkMeetingExists = async (req, res) => {
+    const { meetingCode } = req.body;
 
+    try {
+        const meeting = await Meeting.findOne({ meetingCode: meetingCode.toUpperCase() });
+        if (meeting) {
+            return res.status(httpStatus.OK).json({ exists: true, message: "Meeting found" });
+        } else {
+            return res.status(httpStatus.OK).json({ exists: false, message: "Meeting does not exist" });
+        }
+    } catch (e) {
+        res.json({ message: `Something went wrong ${e}` });
+    }
+}
 
-export{ login, register, getUserHistory, addToHistory };
+export{ login, register, getUserHistory, addToHistory, checkMeetingExists };

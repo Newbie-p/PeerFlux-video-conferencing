@@ -12,7 +12,7 @@ function LandingPage() {
                 </div>
                 <div className='navlist'>
                     <p onClick={() => {
-                        router("/aljk23")
+                        router("/guest-join")
                     }}>Join as Guest</p>
                     <p onClick={() => {
                         router("/auth")

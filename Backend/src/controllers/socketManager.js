@@ -18,31 +18,36 @@ export const connectToSocket = (server) => {
 
     io.on("connection", (socket) => {
 
-        console.log("SOMETHING CONNECTED")
+        console.log("New socket connected:", socket.id)
 
-        socket.on("join-call", (path) => {
+        socket.on("join-call", (meetingCode) => {
 
-            if (connections[path] === undefined) {
-                connections[path] = []
+            console.log(`User ${socket.id} joining meeting: ${meetingCode}`)
+
+            if (connections[meetingCode] === undefined) {
+                connections[meetingCode] = []
             }
-            connections[path].push(socket.id)
+            connections[meetingCode].push(socket.id)
+
+            // Join socket to a room based on meeting code
+            socket.join(meetingCode)
 
             timeOnline[socket.id] = new Date();
 
-            // connections[path].forEach(elem => {
-            //     io.to(elem)
-            // })
-
-            for (let a = 0; a < connections[path].length; a++) {
-                io.to(connections[path][a]).emit("user-joined", socket.id, connections[path])
+            // Notify all users in this meeting that a new user joined
+            for (let a = 0; a < connections[meetingCode].length; a++) {
+                io.to(connections[meetingCode][a]).emit("user-joined", socket.id, connections[meetingCode])
             }
 
-            if (messages[path] !== undefined) {
-                for (let a = 0; a < messages[path].length; ++a) {
-                    io.to(socket.id).emit("chat-message", messages[path][a]['data'],
-                        messages[path][a]['sender'], messages[path][a]['socket-id-sender'])
+            // Send previous messages to the new user
+            if (messages[meetingCode] !== undefined) {
+                for (let a = 0; a < messages[meetingCode].length; ++a) {
+                    io.to(socket.id).emit("chat-message", messages[meetingCode][a]['data'],
+                        messages[meetingCode][a]['sender'], messages[meetingCode][a]['socket-id-sender'])
                 }
             }
+
+            console.log(`Current users in meeting ${meetingCode}:`, connections[meetingCode])
 
         })
 

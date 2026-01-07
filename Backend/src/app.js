@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { connectToSocket } from "./controllers/SocketManager.js";
+import { connectToSocket } from "./controllers/socketManager.js";
 import authRoutes from "./routes/users.routes.js"
 
 dotenv.config();

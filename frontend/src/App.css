@@ -1,9 +1,10 @@
 .landingPageContainer{
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     background: url("/public/background.png");
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
     color: white;
 }
 
@@ -91,4 +92,449 @@
   width: 30vw;
   height: auto;
   border-radius: 20px;
+}
+
+/* Guest Join Page Styles */
+.guestJoinContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+  width: 100%;
+  padding-inline: 1rem;
+}
+
+.guestJoinForm {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.guestJoinForm h1 {
+  text-align: center;
+  color: white;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  color: white;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.formGroup input {
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  background: white;
+  box-shadow: 0 0 10px rgba(255, 152, 57, 0.5);
+}
+
+.formGroup input:disabled {
+  background: rgba(200, 200, 200, 0.5);
+  cursor: not-allowed;
+}
+
+.errorMessage {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  border-left: 3px solid #ff6b6b;
+}
+
+.joinButton {
+  width: 100%;
+  padding: 1rem;
+  background: #FF9839;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.joinButton:hover:not(:disabled) {
+  background: #D97500;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 152, 57, 0.4);
+}
+
+.joinButton:disabled {
+  background: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.loginPrompt {
+  text-align: center;
+  color: white;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* ===== Authentication Page Styles ===== */
+.authPageContainer {
+  min-height: 100vh;
+  width: 100%;
+  background: url("/public/background.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+}
+
+.authNav {
+  padding-inline: 1.2rem;
+  padding-block: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.authNav h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+}
+
+.navBackButton p {
+  color: white;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.navBackButton p:hover {
+  color: #FF9839;
+}
+
+.authMainContainer {
+  display: flex;
+  flex: 1;
+  gap: 0;
+}
+
+.authLeftPanel {
+  flex: 1;
+  background: linear-gradient(135deg, rgba(255, 152, 57, 0.1) 0%, rgba(217, 117, 0, 0.15) 100%);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-right: 1px solid rgba(255, 152, 57, 0.2);
+}
+
+.authLeftContent {
+  color: white;
+  max-width: 400px;
+}
+
+.authLeftContent h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #FF9839;
+}
+
+.authLeftContent p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.authFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.feature {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.featureIcon {
+  font-size: 2rem;
+  min-width: 3rem;
+}
+
+.feature h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #FF9839;
+  margin-bottom: 0.25rem;
+}
+
+.feature p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.authRightPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.authFormContainer {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.authFormHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.authFormHeader h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FF9839;
+  margin: 0 0 0.5rem 0;
+}
+
+.authFormHeader p {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+}
+
+.authTabButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.authTab {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  position: relative;
+  bottom: -2px;
+}
+
+.authTab:hover {
+  color: #FF9839;
+}
+
+.authTab.active {
+  color: #FF9839;
+  border-bottom-color: #FF9839;
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.formGroup input {
+  padding: 0.85rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #333;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #FF9839;
+  box-shadow: 0 0 0 3px rgba(255, 152, 57, 0.1);
+  background-color: rgba(255, 152, 57, 0.02);
+}
+
+.formGroup input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.rememberMe {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rememberMe input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #FF9839;
+}
+
+.rememberMe label {
+  cursor: pointer;
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+  font-weight: 400;
+}
+
+.authSubmitBtn {
+  padding: 1rem;
+  background: linear-gradient(135deg, #FF9839 0%, #D97500 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.authSubmitBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 152, 57, 0.3);
+}
+
+.authSubmitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.authSubmitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.authFooter {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.authFooter p {
+  margin: 0;
+}
+
+.orDivider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.orDivider::before,
+.orDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.orDivider span {
+  color: #999;
+}
+
+.guestLoginBtn {
+  width: 100%;
+  padding: 0.85rem;
+  background: white;
+  color: #FF9839;
+  border: 2px solid #FF9839;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.guestLoginBtn:hover {
+  background: rgba(255, 152, 57, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .authMainContainer {
+    flex-direction: column;
+  }
+
+  .authLeftPanel {
+    display: none;
+  }
+
+  .authRightPanel {
+    padding: 1.5rem;
+  }
+
+  .authFormContainer {
+    padding: 2rem;
+    max-width: 100%;
+  }
+
+  .authLeftContent h1 {
+    font-size: 2rem;
+  }
+
+  .featureIcon {
+    font-size: 1.5rem;
+    min-width: 2rem;
+  }
 }

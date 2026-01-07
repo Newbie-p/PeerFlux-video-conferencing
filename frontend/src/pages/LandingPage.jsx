@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import "../App.css"
 
 function LandingPage() {
+    const router = useNavigate();
     return ( 
         <div className='landingPageContainer'>
             <nav>
@@ -9,9 +11,19 @@ function LandingPage() {
                     <h2>PeerFlux</h2>
                 </div>
                 <div className='navlist'>
-                    <p>Join as Guest</p>
-                    <p>Register</p>
-                    <div role='button'>Login</div>
+                    <p onClick={() => {
+                        router("/aljk23")
+                    }}>Join as Guest</p>
+                    <p onClick={() => {
+                        router("/auth")
+
+                    }}>Register</p>
+                    <div onClick={() => {
+                        router("/auth")
+
+                    }} role='button'>
+                        <p>Login</p>
+                    </div>
                 </div>
             </nav>
 

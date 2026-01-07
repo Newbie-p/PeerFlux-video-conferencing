@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../App.css";
+import server from '../environment';
 
 function GuestJoin() {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ function GuestJoin() {
 
         try {
             // Check if meeting exists
-            const response = await fetch('http://localhost:8000/api/v1/users/check-meeting', {
+            const response = await fetch(`${server}/api/v1/users/check-meeting`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

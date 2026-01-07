@@ -3,6 +3,7 @@ import withAuth from '../utils/withAuth'
 import { useNavigate } from 'react-router-dom'
 import "../App.css";
 import { AuthContext } from '../contexts/AuthContext';
+import server from '../environment';
 
 function HomeComponent() {
 
@@ -24,7 +25,7 @@ function HomeComponent() {
         setLoading(true);
         try {
             // Verify meeting exists before joining
-            const response = await fetch('http://localhost:8000/api/v1/users/check-meeting', {
+            const response = await fetch(`${server}/api/v1/users/check-meeting`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
